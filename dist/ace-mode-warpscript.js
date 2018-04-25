@@ -130,17 +130,28 @@ System.register([], function (exports_1, context_1) {
                     content: "[ ${1:read_token} '${2:class}' { ${3} } \\$end \\$interval ] FETCH\n"
                 }, {
                     name: 'find',
-                    content: "[ ${1:read_token} '${2:class}' { ${3} } ] FIND\n"
+                    content: "[ ${1:read_token} '${2:class}' { ${3} } ] FIND \n"
+                }, {
+                    name: 'bucketize',
+                    content: '[ SWAP bucketizer.${1:max} \\$end ${2:5 m} ${3:0} ] BUCKETIZE \n'
                 }, {
                     name: 'map',
                     content: "[ SWAP mapper.${1:max} ${2:0} ${3:0} ${4:0} ] MAP \n"
                 }, {
-                    name: 'New GTS',
+                    name: 'reduce',
+                    content: "[ SWAP [ ${1:} ] reducer.${2:sum} ] REDUCE \n"
+                }, {
+                    name: 'new gts',
                     content: "NEWGTS '${1:name}' RENAME { ${2:labels} } RELABEL \n"
                 }, {
-                    name: 'toto',
-                    //content: '[ SWAP bucketizer.${1:max} \\end ${2:5 m} ${3:0} ] BUCKETIZE'
-                    content: 'test'
+                    name: 'lmap',
+                    content: '<% ${1:DROP}\n${2:} \n%> LMAP'
+                }, {
+                    name: 'ift',
+                    content: '<% ${1:true} %>\n\t<% ${2:} %>\nIFT \n'
+                }, {
+                    name: 'ifte',
+                    content: '<% ${1:true} %>\n\t<% ${2:} %>\n\t<% ${3:} %>\nIFTE \n'
                 }];
         });
     }
