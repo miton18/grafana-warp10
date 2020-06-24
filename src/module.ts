@@ -1,25 +1,51 @@
-///<reference path="../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
 
-import { loadPluginCss } from 'app/plugins/sdk'
+import { DataSourceInstanceSettings, MetricFindValue, DataQueryRequest, DataQueryResponse, MutableDataFrame, DataSourceApi } from '@grafana/data';
+import { DataSourcePlugin } from '@grafana/data'
+import { DataSourceWithBackend } from '@grafana/runtime';
+import { DataQuery, DataSourceJsonData } from '@grafana/data'
+import { Observable } from 'rxjs';
 
-import Datasource from './warp10-datasource'
-import ConfigCtrl from './warp10-config.controller'
-import QueryCtrl from './warp10-query.controller'
-import AnnotationsQueryCtrl from './warp10-annotation.controller'
-import QueryOptionsCtrl from './warp10-query-options.controller'
+class DataSource extends DataSourceApi {
+  constructor(private instanceSettings: DataSourceInstanceSettings<Warp10Options>) {
+    super(instanceSettings);
+  }
 
-function getCSSPath(sheet) {
-  return `plugins/ovh-warp10-datasource/style/${ sheet }.css`
+  async query(request: DataQueryRequest<Warp10Query>): Promise<DataQueryResponse> {
+    const { range } = request
+    const from = range!.from.valueOf()
+    const to = range!.to.valueOf()
+
+    const data = request.targets.map(target => {
+      // Your code goes here.
+    })
+
+    return {data}
+  }
+
+  async metricFindQuery?(query: any, options?: any): Promise<MetricFindValue[]> {
+    return Promise.resolve([]);
+  }
+
+  async testDatasource() {
+
+  }
 }
 
-loadPluginCss({
-  dark: getCSSPath('dark'),
-  light: getCSSPath('light')
-})
+interface Warp10Query extends DataQuery {
+    query?: string;
+    options?: Warp10Options;
+  }
 
-export {
-  Datasource,
-  QueryCtrl,
-  ConfigCtrl,
-  AnnotationsQueryCtrl
-}
+interface Warp10Options extends DataSourceJsonData {
+    organization?: string;
+    defaultBucket?: string;
+    maxSeries?: number;
+  }
+
+interface InfluxSecureJsonData {
+    token?: string;
+  }
+
+export const plugin = new DataSourcePlugin<DataSource, Warp10Query, Warp10Options>(DataSource)
+  //.setConfigEditor(ConfigEditor)
+  //.setQueryEditor(QueryEditor);
